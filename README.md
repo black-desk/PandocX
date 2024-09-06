@@ -54,7 +54,10 @@ podman run --rm docker.io/blackdesk/pandocx \
 ## Build
 
 ```bash
-export CONTAINER_REPOSITORY=docker.io/blackdesk/pandocx # Use your own repository.
+# Default container engine is podman, you can use docker.
+# export CONTAINER_ENGINE=podman
+# Default container repository, you can use your own repository.
+# export CONTAINER_REPOSITORY=docker.io/blackdesk/pandocx
 make # for `latest` tag
 make diagram # for `diagram` tag
 ```
