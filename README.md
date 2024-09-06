@@ -2,20 +2,21 @@
 
 A Pandoc docker image with some extra tools and filters.
 
-## Tools
+## Avaiable tools in container
 
-### latest
+| tag       | tools                   |
+| --------- | ----------------------- |
+| `latest`  | typst                   |
+| `diagram` | typst plantuml graphviz |
 
-- typst
+## Avaiable lua filters
 
-### diagram
+- All filters in https://github.com/pandoc/lua-filters
 
-- graphviz
-- plantuml
+  `include-files.lua` is patched.
+  Check [the patch](./0001-include-files-add-pandoc_markdown-support.patch)
+  for details.
 
-## Lua filters
-
-- https://github.com/pandoc/lua-filters
 - https://github.com/pandoc-ext/diagram
 
 ## Usage
@@ -48,4 +49,12 @@ podman run --rm docker.io/blackdesk/pandocx \
   -v "$EXTERNAL_FONTS_DIR:/pandocx/share/fonts" \
   -v "$EXTERNAL_TEMPLATES_DIR:/pandocx/share/pandoc/templates" \
   relative/path/to/source/file -o relative/path/to/output/file
+```
+
+## Build
+
+```bash
+export CONTAINER_REPOSITORY=docker.io/blackdesk/pandocx # Use your own repository.
+make # for `latest` tag
+make diagram # for `diagram` tag
 ```
