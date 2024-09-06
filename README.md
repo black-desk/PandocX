@@ -54,6 +54,7 @@ podman run --rm docker.io/blackdesk/pandocx \
 ## Build
 
 ```bash
+git submodule update --init
 # Default container engine is podman, you can use docker.
 # export CONTAINER_ENGINE=podman
 # Default container repository, you can use your own repository.
