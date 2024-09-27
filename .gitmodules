@@ -1,6 +1,6 @@
 [submodule "lua-filters"]
-	path = lua-filters
-	url = https://github.com/pandoc/lua-filters
+        path = lua-filters
+        url = https://github.com/black-desk/lua-filters
 [submodule "diagram"]
-	path = diagram
-	url = https://github.com/pandoc-ext/diagram
+        path = diagram
+        url = https://github.com/pandoc-ext/diagram
