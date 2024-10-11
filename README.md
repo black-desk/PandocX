@@ -11,11 +11,7 @@ A Pandoc docker image with some extra tools and filters.
 
 ## Avaiable lua filters
 
-- All filters in https://github.com/pandoc/lua-filters
-
-  `include-files.lua` is patched.
-  Check [the patch](./0001-include-files-add-pandoc_markdown-support.patch)
-  for details.
+- All filters in https://github.com/black-desk/lua-filters
 
 - https://github.com/pandoc-ext/diagram
 
