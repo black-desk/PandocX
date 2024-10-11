@@ -13,7 +13,6 @@ ENV PANDOCX_PANDOC_DATA_DIR ${PANDOCX_DATA_DIR}/pandoc
 ENV XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}:${PANDOCX_DATA_DIR}"
 ENV XDG_DATA_HOME="${PANDOCX_DATA_DIR}"
 
-COPY lua-filters/.build/lua-filters/filters ${PANDOCX_PANDOC_DATA_DIR}/filters
-COPY diagram/diagram.lua ${PANDOCX_PANDOC_DATA_DIR}/filters/
+COPY filters ${PANDOCX_PANDOC_DATA_DIR}/filters
 
 ENTRYPOINT ["/usr/local/bin/pandoc"]
