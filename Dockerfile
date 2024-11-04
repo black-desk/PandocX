@@ -1,3 +1,12 @@
+FROM docker.io/alpine AS builder
+
+COPY . /tmp/source
+WORKDIR /tmp/source
+RUN \
+        apk add --no-cache --update make && \
+        make install && \
+        apk del make
+
 FROM docker.io/pandoc/core:latest
 
 RUN apk add --no-cache --update typst
@@ -6,13 +15,6 @@ ARG extra_packages
 
 RUN apk add --no-cache --update ${extra_packages}
 
-ENV PANDOCX_PREFIX /pandocx
-ENV PANDOCX_DATA_DIR ${PANDOCX_PREFIX}/share
-ENV PANDOCX_PANDOC_DATA_DIR ${PANDOCX_DATA_DIR}/pandoc
-
-ENV XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}:${PANDOCX_DATA_DIR}"
-ENV XDG_DATA_HOME="${PANDOCX_DATA_DIR}"
-
-COPY filters ${PANDOCX_PANDOC_DATA_DIR}/filters
+COPY --from=builder /usr/local/share/pandoc /usr/local/share/pandoc
 
 ENTRYPOINT ["/usr/local/bin/pandoc"]
