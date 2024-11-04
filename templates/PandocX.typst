@@ -91,6 +91,9 @@ $if(toc)$
 #pagebreak(weak: true)
 $endif$
 
+#show raw: set text(font: ($for(monofont)$"$monofont$",$endfor$))
+#show quote: set text(font: ($for(quotefont)$"$quotefont$",$endfor$))
+
 $ PandocX-include-before.typ() $
 
 $for(include-before)$

@@ -35,15 +35,46 @@ lua-filters/.build/lua-filters/filters:
 .PHONY: clean
 clean:
 	rm -rf ./filters
-	rm -rf ./templates/*.typst
 	rm -rf ./lua-filters/.build
 
 .PHONY: install-data
 install-data:
 	$(INSTALL) -d "$(DESTDIR)$(datarootdir)"/pandoc/filters
-	find filters -type f -exec $(INSTALL_DATA) "{}" "$(DESTDIR)$(datarootdir)/pandoc/filters" \;
+	$(INSTALL_DATA) ./filters/abstract-to-meta.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/author-info-blocks.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/bibexport.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/cito.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/diagram-generator.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/diagram.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/doi2cite.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/first-line-indent.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/include-code-files.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/include-files.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/latex-hyphen.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/lilypond.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/list-table.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/lua-debug-example.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/math2svg.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/mhchem.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/minted.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/multiple-bibliographies.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/not-in-format.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/pagebreak.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/pandoc-quotes.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/revealjs-codeblock.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/scholarly-metadata.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/scrlttr2.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/section-refs.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/short-captions.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/spellcheck.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/table-short-captions.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/track-changes.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
+	$(INSTALL_DATA) ./filters/wordcount.lua "$(DESTDIR)$(datarootdir)/pandoc/filters"
 	$(INSTALL) -d "$(DESTDIR)$(datarootdir)"/pandoc/templates
-	find templates -type f -exec $(INSTALL_DATA) "{}" "$(DESTDIR)$(datarootdir)/pandoc/templates" \;
+	$(INSTALL_DATA) ./templates/PandocX.typst "$(DESTDIR)$(datarootdir)/pandoc/templates"
+	$(INSTALL_DATA) ./templates/PandocX-template.typ "$(DESTDIR)$(datarootdir)/pandoc/templates"
+	$(INSTALL_DATA) ./templates/PandocX-definitions.typ "$(DESTDIR)$(datarootdir)/pandoc/templates"
+	$(INSTALL_DATA) ./templates/PandocX-include-before.typ "$(DESTDIR)$(datarootdir)/pandoc/templates"
 
 .PHONY: install
 install: install-data
