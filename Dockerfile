@@ -46,5 +46,5 @@ COPY --from=builder /opt/plantuml /opt/plantuml
 COPY --from=builder /usr/local/bin/plantuml /usr/local/bin/plantuml
 
 FROM diagram AS extra
-RUN apk add --no-cache --update font-noto-mono font-noto-cjk-extra
+RUN apk add --no-cache --update font-noto-all font-noto-cjk-extra
 COPY --from=builder /usr/local/share/fonts /usr/local/share/fonts
