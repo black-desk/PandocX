@@ -15,14 +15,38 @@ SHELL = sh
 CONTAINER_ENGINE := podman
 CONTAINER_REPOSITORY := docker.io/blackdesk/pandocx
 
-.PHONY: latest
-latest: filters templates
-	$(CONTAINER_ENGINE) build . -t $(CONTAINER_REPOSITORY):latest
+.PHONY: all
+all: filters
 
-.PHONY: diagram
-diagram: filters templates
-	$(CONTAINER_ENGINE) build . -t $(CONTAINER_REPOSITORY):diagram \
-		--build-arg extra_packages="graphviz plantuml" 
+.PHONY: images
+images: image-latest image-diagram image-extra
+
+.PHONY: image-latest
+image-latest: filters templates
+	$(CONTAINER_ENGINE) build --network=host . --target latest -t $(CONTAINER_REPOSITORY):latest
+
+.PHONY: image-diagram
+image-diagram: filters templates
+	$(CONTAINER_ENGINE) build --network=host . --target diagram -t $(CONTAINER_REPOSITORY):diagram
+
+.PHONY: image-extra
+image-extra: filters templates
+	$(CONTAINER_ENGINE) build --network=host . --target extra -t $(CONTAINER_REPOSITORY):extra
+
+.PHONY: push-images
+push-images: push-image-latest push-image-diagram push-image-extra
+
+.PHONY: push-image-latest
+push-image-latest:
+	$(CONTAINER_ENGINE) push $(CONTAINER_REPOSITORY):latest
+
+.PHONY: push-image-diagram
+push-image-diagram:
+	$(CONTAINER_ENGINE) push $(CONTAINER_REPOSITORY):diagram
+
+.PHONY: push-image-extra
+push-image-extra:
+	$(CONTAINER_ENGINE) push $(CONTAINER_REPOSITORY):extra
 
 .PHONY: filters
 filters: lua-filters/.build/lua-filters/filters

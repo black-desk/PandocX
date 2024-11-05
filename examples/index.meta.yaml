@@ -9,7 +9,7 @@ monofont:
   - Noto Mono
   - Noto Sans CJK SC
 quotefont:
-  - Noto Serif CJK SC
+  - LXGW WenKai
 author:
   - name: Chen Linxuan
     email: me@black-desk.cn
