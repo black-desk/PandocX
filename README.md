@@ -4,10 +4,11 @@ A Pandoc docker image with some extra tools and filters.
 
 ## Avaiable tools in container
 
-| tag       | tools                   |
-| --------- | ----------------------- |
-| `latest`  | typst                   |
-| `diagram` | typst plantuml graphviz |
+| tag       | tools                         |
+| --------- | ----------------------------- |
+| `latest`  | typst                         |
+| `diagram` | typst plantuml graphviz       |
+| `extra`   | typst plantuml graphviz fonts |
 
 ## Avaiable lua filters
 
@@ -55,6 +56,5 @@ git submodule update --init
 # export CONTAINER_ENGINE=podman
 # Default container repository, you can use your own repository.
 # export CONTAINER_REPOSITORY=docker.io/blackdesk/pandocx
-make # for `latest` tag
-make diagram # for `diagram` tag
+make images
 ```
