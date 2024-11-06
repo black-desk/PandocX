@@ -157,10 +157,6 @@ function main() {
 	fi
 
 	"${PANDOC[@]}" "${PANDOC_OPTIONS[@]}"
-
-	if command -v xdg-open &>/dev/null; then
-		xdg-open "$PANDOC_OUTPUT" || true
-	fi
 }
 
 main "$@"
