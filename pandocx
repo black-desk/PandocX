@@ -91,7 +91,7 @@ function main() {
 	fi
 
 	PANDOC=(
-		podman run --network=host -it --rm
+		podman run --network=host --rm
 		-v "$PWD:/data"
 		-v "/usr/share/fonts/:/usr/local/share/fonts/host-usr-share-fonts"
 		-v "/usr/local/share/fonts/:/usr/local/share/fonts/host-usr-local-share-fonts"
