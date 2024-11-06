@@ -129,6 +129,7 @@ function main() {
 				--extract-media=media
 				--metadata-file="$PANDOC_METADATA"
 				-M date="$(date +%x)"
+				-M include-auto
 				--from markdown+east_asian_line_breaks
 				--shift-heading-level-by=-1
 				--lua-filter include-files.lua
@@ -143,6 +144,7 @@ function main() {
 				--columns=80
 				--metadata-file="$PANDOC_METADATA"
 				-M date="$(date +%x)"
+				-M include-auto
 				-M toc=true
 				--from markdown+east_asian_line_breaks
 				--lua-filter include-files.lua
