@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# NOTE:
+# Use /usr/bin/env to find shell interpreter for better portability.
+# Reference: https://en.wikipedia.org/wiki/Shebang_%28Unix%29#Portability
+
+# NOTE:
+# Exit immediately if any commands (even in pipeline)
+# exits with a non-zero status.
+set -e
+set -o pipefail
+
+# WARNING:
+# This is not reliable when using POSIX sh
+# and current script file is sourced by `source` or `.`
+CURRENT_SOURCE_FILE_PATH="${BASH_SOURCE[0]:-$0}"
+CURRENT_SOURCE_FILE_NAME="$(basename -- "$CURRENT_SOURCE_FILE_PATH")"
+
+# shellcheck disable=SC2016
+USAGE="$CURRENT_SOURCE_FILE_NAME"'
+
+Extended pandoc distribution in container image
+with additional filters and templates.
+
+Execute with no arguments, it will call pandoc with default options:
+
+pandoc index.md -o "$TITLE".pdf -t typst --standalone
+--template=PandocX.typst
+--columns=80
+--extract-media=media
+--metadata-file="index.meta.yaml"
+-M date="$(date +'%x')"
+--from markdown+east_asian_line_breaks
+--shift-heading-level-by=-1
+--lua-filter include-files.lua
+--lua-filter include-code-files.lua
+--lua-filter diagram.lua
+
+'"
+Usage:
+  $CURRENT_SOURCE_FILE_NAME -h
+  $CURRENT_SOURCE_FILE_NAME [--preset=(pdf|gfm)|-- PANDOC_OPTIONS]
+
+Options:
+  -h	Show this screen."
+
+# This function log messages to stderr works like printf
+# with a prefix of the current script name.
+# Arguments:
+#   $1 - The format string.
+#   $@ - Arguments to the format string, just like printf.
+function log() {
+	local format="$1"
+	shift
+	# shellcheck disable=SC2059
+	printf "$CURRENT_SOURCE_FILE_NAME: $format\n" "$@" >&2 || true
+}
+
+function main() {
+	PANDOCX_PRESET=pdf
+
+	while getopts ':h-:' option; do
+		case "$option" in
+		-)
+			case "${OPTARG}" in
+			preset)
+				PANDOCX_PRESET="${!OPTIND}"
+				OPTIND=$((OPTIND + 1))
+				;;
+			preset=*)
+				PANDOCX_PRESET=${OPTARG#*=}
+				;;
+			*) ;;
+			esac
+			;;
+		h)
+			echo "$USAGE"
+			exit
+			;;
+		\?) ;;
+		esac
+	done
+	shift $((OPTIND - 1))
+
+	XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+	PANDOC_DATA_DIR="${PANDOC_DATA_DIR:-$XDG_DATA_HOME/pandoc}"
+	if [ -d "$PANDOC_DATA_DIR" ]; then
+		log "Mount $PANDOC_DATA_DIR to /usr/local/share/pandoc"
+		PANDOC_CONTAINER_DATA_DIR_ARGS=(
+			-v "$PANDOC_DATA_DIR":/usr/local/share/pandoc
+		)
+	fi
+
+	PANDOC=(
+		podman run --network=host -it --rm
+		-v "$PWD:/data"
+		-v "/usr/share/fonts/:/usr/local/share/fonts/host-usr-share-fonts"
+		-v "/usr/local/share/fonts/:/usr/local/share/fonts/host-usr-local-share-fonts"
+		"${PANDOC_CONTAINER_DATA_DIR_ARGS[@]}"
+		docker.io/blackdesk/pandocx:diagram
+		--data-dir=/usr/local/share/pandoc
+	)
+
+	if [ "$#" -gt 0 ]; then
+		PANDOCX_PRESET=""
+		PANDOC_OPTIONS=("$@")
+	fi
+
+	if [ -n "$PANDOCX_PRESET" ]; then
+		PANDOC_INPUT="${1:-index.pmd}"
+
+		PANDOC_METADATA="$PANDOC_INPUT".yaml
+		if [ ! -f "$PANDOC_METADATA" ]; then
+			log "No metadata file found at $PANDOC_METADATA"
+			PANDOC_METADATA="/dev/null"
+		fi
+
+		if [ "$PANDOCX_PRESET" == "pdf" ]; then
+			TITLE="$(
+				grep \# -m 1 "$PANDOC_INPUT" |
+					awk '{$1 = ""; print substr($0, 2)}'
+			)"
+			PANDOC_OUTPUT="$TITLE".pdf
+			PANDOC_OPTIONS=(
+				"$PANDOC_INPUT" -o "$PANDOC_OUTPUT"
+				--standalone
+				-t typst
+				--template=PandocX.typst
+				--columns=80
+				--extract-media=media
+				--metadata-file="$PANDOC_METADATA"
+				-M date="$(date +%x)"
+				--from markdown+east_asian_line_breaks
+				--shift-heading-level-by=-1
+				--lua-filter include-files.lua
+				--lua-filter include-code-files.lua
+				--lua-filter diagram.lua
+			)
+		elif [ "$PANDOCX_PRESET" == "gfm" ]; then
+			PANDOC_OUTPUT="${PANDOC_INPUT%.pmd}".md
+			PANDOC_OPTIONS=(
+				"$PANDOC_INPUT" -o "$PANDOC_OUTPUT"
+				-t gfm-yaml_metadata_block
+				--columns=80
+				--metadata-file="$PANDOC_METADATA"
+				-M date="$(date +%x)"
+				-M toc=true
+				--from markdown+east_asian_line_breaks
+				--lua-filter include-files.lua
+				--lua-filter include-code-files.lua
+			)
+		else
+			log "Unknown preset: $PANDOCX_PRESET"
+			exit 1
+		fi
+	fi
+
+	"${PANDOC[@]}" "${PANDOC_OPTIONS[@]}"
+
+	if command -v xdg-open &>/dev/null; then
+		xdg-open "$PANDOC_OUTPUT" || true
+	fi
+}
+
+main "$@"

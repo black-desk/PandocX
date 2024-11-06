@@ -4,7 +4,7 @@ COPY . /tmp/source
 WORKDIR /tmp/source
 RUN \
         apk add --no-cache --update make && \
-        make install
+        make install-data
 
 RUN \
         apk add --no-cache --update curl

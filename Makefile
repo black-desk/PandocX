@@ -100,5 +100,10 @@ install-data:
 	$(INSTALL_DATA) ./templates/PandocX-definitions.typ "$(DESTDIR)$(datarootdir)/pandoc/templates"
 	$(INSTALL_DATA) ./templates/PandocX-include-before.typ "$(DESTDIR)$(datarootdir)/pandoc/templates"
 
+.PHONY: install-bin
+install-bin:
+	$(INSTALL) -d "$(DESTDIR)$(bindir)"
+	$(INSTALL_PROGRAM) ./pandocx "$(DESTDIR)$(bindir)"
+
 .PHONY: install
-install: install-data
+install: install-data install-bin
