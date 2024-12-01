@@ -23,22 +23,28 @@ with additional filters and templates.
 
 Execute with no arguments, it will call pandoc with default options:
 
-pandoc index.md -o "$TITLE".pdf -t typst --standalone
---template=PandocX.typst
---columns=80
---extract-media=media
---metadata-file="index.meta.yaml"
--M date="$(date +'%x')"
---from markdown+east_asian_line_breaks
---shift-heading-level-by=-1
---lua-filter include-files.lua
---lua-filter include-code-files.lua
---lua-filter diagram.lua
+pandoc index.pmd -o "$TITLE".pdf -t typst --standalone \
+  --template=PandocX.typst \
+  --columns=80 \
+  --extract-media=media \
+  --metadata-file="index.meta.yaml" \
+  -M date="$(date +'%x')" \
+  --from markdown+east_asian_line_breaks \
+  --shift-heading-level-by=-1 \
+  --lua-filter include-files.lua \
+  --lua-filter include-code-files.lua \
+  --lua-filter diagram.lua
+
+NOTE:
+
+1. $TITLE is the first heading in index.pmd
+2. pmd means Pandoc Markdown
 
 '"
 Usage:
   $CURRENT_SOURCE_FILE_NAME -h
-  $CURRENT_SOURCE_FILE_NAME [--preset=(pdf|gfm)|-- PANDOC_OPTIONS]
+  $CURRENT_SOURCE_FILE_NAME [--preset=(pdf|gfm)]
+  $CURRENT_SOURCE_FILE_NAME -- PANDOC_OPTION...
 
 Options:
   -h	Show this screen."
